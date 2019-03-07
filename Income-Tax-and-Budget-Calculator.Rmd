@@ -76,7 +76,7 @@ rbind(il,mo)
 ```
 
 #### User-defined Living Expenses
-##### This function is meant for inputting personal/ variable costs due to the set values
+##### This function is meant for inputting personal/ variable costs
 ```{r}
 custom_living_expenses_func <- function(salary=salary, rent=0,rental_insur = 0,
                                         utilities = 0,internet = 0, online_streaming = 0, 
