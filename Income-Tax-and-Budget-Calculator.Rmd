@@ -3,7 +3,6 @@ title: "Income Tax and Budget Calculator"
 author: "Nick Dylla"
 output:
   html_document: default
-  pdf_document: default
 ---
 #### Federal Income Tax for Single Filing Tax Bracket
 ```{r}
