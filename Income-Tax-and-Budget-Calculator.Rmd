@@ -1,28 +1,110 @@
 ---
-title: "Untitled"
-output: html_document
+title: "Income Tax and Budget Calculator"
+author: "Nick Dylla"
+output:
+  html_document: default
+  pdf_document: default
 ---
+#### Federal Income Tax for Single Filing Tax Bracket
+```{r}
+fed_tax_func <- function(salary,
+         brackets = c(9525,38700,82500,157500,200000,500000,Inf),
+         rates = c(0.10,0.12,0.22,0.24,0.32,0.35,0.37)) {        
+    sum(diff(c(0, pmin(salary, brackets))) * rates)
+}
+# fed_tax_func(100000) #function works, double-checked online at ('https://www.taxact.com/tools/tax-bracket-calculator')
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+### Example of Flat-Rate Income Tax (Illinois)
+#### Total Illinois Income Tax for Single Filing Tax Bracket
+```{r}
+il_budget <- function(salary = data){
+   std_deduct = 12000 # 2019 standard deduction is 12000
+   fed_tax = fed_tax_func(salary-std_deduct) # federal tax with standard deduction included
+   no_deduc_fed_tax = fed_tax_func(salary) # federal tax without standard deduction included
+   state_tax = 0.0495*salary # flat rate
+   soc_sec = 0.0620*salary # flat rate
+   medicare = 0.0145*salary # flat rate
+   tot_tax = fed_tax+state_tax+soc_sec+medicare
+   no_deduc_tot_tax = no_deduc_fed_tax+state_tax+soc_sec+medicare
+   post_tax = salary - no_deduc_tot_tax
+   post_deduct_tax = salary - tot_tax
+   return(data.frame('Salary'=salary,'Federal Tax'=fed_tax,'State Tax'=state_tax, 
+                     'Social Security'=soc_sec, 'Medicare'=medicare,'Total Tax'=tot_tax,
+                     'Income After Tax w/o Deduction'=post_tax,
+                     'Income After Tax w/ Deduction'=post_deduct_tax))
+}
+il <- il_budget(100000) # Test run
+il # Works out
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+### Example of Bracketed State Income Tax (Missouri)
+#### Missouri Income Tax for Single Filing Tax Bracket
+```{r}
+mo_tax_func <- function(salary,
+         brackets = c(1008,2016,3024,4032,5040,6048,7056,8064,9072,Inf),
+         rates = c(0.015,0.02,0.025,0.03,0.035,0.04,0.045,0.05,0.055,0.060)) {        
+    sum(diff(c(0, pmin(salary, brackets))) * rates)
+}
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+#### Total Missouri Income Tax for Single Filing Tax Bracket
+```{r}
+mo_budget <- function(salary = data){
+   std_deduct = 12000 # 2019 standard deduction is 12000
+   fed_tax = fed_tax_func(salary-std_deduct) # federal tax with standard deduction included
+   no_deduc_fed_tax = fed_tax_func(salary) # federal tax without standard deduction included
+   state_tax = mo_tax_func(salary)
+   soc_sec = 0.0620*salary
+   medicare = 0.0290*salary
+   tot_tax = fed_tax+state_tax+soc_sec+medicare
+   no_deduc_tot_tax = no_deduc_fed_tax+state_tax+soc_sec+medicare
+   post_tax = salary - no_deduc_tot_tax
+   post_deduct_tax = salary - tot_tax
+   return(data.frame('Salary'=salary,'Federal Tax'=fed_tax,'State Tax'=state_tax, 
+                     'Social Security'=soc_sec, 'Medicare'=medicare,'Total Tax'=tot_tax,
+                     'Income After Tax w/o Deduction'=post_tax,
+                     'Income After Tax w/ Deduction'=post_deduct_tax))
+}
+mo <- mo_budget(100000) # Test run
+mo # Works out
+```
+
+#### Compare Incomes Between Illinois and Missouri for Single Filing Tax Bracket
+```{r}
+rbind(il,mo)
+```
+
+#### User-defined Living Expenses
+##### This function is meant for inputting personal/ variable costs due to the set values
+```{r}
+custom_living_expenses_func <- function(salary=salary, rent=0,rental_insur = 0,
+                                        utilities = 0,internet = 0, online_streaming = 0, 
+                                        cell_phone = 0, groceries = 0,
+                                        eat_out = 0, entertainment = 0, clothing = 0,
+                                        miscellaneous = 0, dental_insur = 0, 
+                                        vision_insur = 0, health_insur = 0, Rx_insur = 0,
+                                        accident_insur = 0, car_insur = 0, gasoline = 0,
+                                        loan = 0, one_time_pet_cost = 0, pet_food = 0,
+                                        annual_pet_exam = 0, pet_license = 0, 
+                                        gym_membership = 0){
+  total_cost = rent+rental_insur+utilities+internet+online_streaming+cell_phone+groceries+eat_out+
+                      entertainment+clothing+miscellaneous+dental_insur+vision_insur+
+                      health_insur+Rx_insur+accident_insur+car_insur+gasoline+loan+
+                      one_time_pet_cost+pet_food+annual_pet_exam+pet_license+gym_membership
+  savings = salary-total_cost
+  return(data.frame(salary,total_cost,savings))
+} # This function is not great for inputting personal/ variable costs due to the set values
+```
+
+#### Total Cost of Living (2 Salaries)
+##### User-defined 'custom_living_expenses_func'
+```{r}
+# Salary 1 = 75000
+# Salary 2 = 25000
+sal_1 <- il_budget(75000)
+sal_2 <- il_budget(25000)
+total_sal <- sal_1$Income.After.Tax.w..Deduction+sal_2$Income.After.Tax.w..Deduction # columns containing the salary after taxes with the standard deduction included
+custom_living_expenses_func(salary=total_sal,rent = 18000) # This will return the combined salaries, total living expense costs, and combined savings if you only had to pay rent 
+```
