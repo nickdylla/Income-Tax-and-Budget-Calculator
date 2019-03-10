@@ -82,14 +82,14 @@ custom_living_expenses_func <- function(salary=salary, rent=0,rental_insur = 0,
                                         utilities = 0,internet = 0, online_streaming = 0, 
                                         cell_phone = 0, groceries = 0,
                                         eat_out = 0, entertainment = 0, clothing = 0,
-                                        miscellaneous = 0, dental_insur = 0, 
+                                        miscellaneous = 0, life_insur = 0, dental_insur = 0, 
                                         vision_insur = 0, health_insur = 0, Rx_insur = 0,
                                         accident_insur = 0, car_insur = 0, gasoline = 0,
                                         loan = 0, one_time_pet_cost = 0, pet_food = 0,
                                         annual_pet_exam = 0, pet_license = 0, 
                                         gym_membership = 0){
   total_cost = rent+rental_insur+utilities+internet+online_streaming+cell_phone+groceries+eat_out+
-                      entertainment+clothing+miscellaneous+dental_insur+vision_insur+
+                      entertainment+clothing+miscellaneous+life_insur+dental_insur+vision_insur+
                       health_insur+Rx_insur+accident_insur+car_insur+gasoline+loan+
                       one_time_pet_cost+pet_food+annual_pet_exam+pet_license+gym_membership
   savings = salary-total_cost
