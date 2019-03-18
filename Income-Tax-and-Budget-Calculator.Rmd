@@ -7,7 +7,7 @@ output:
 #### Federal Income Tax for Single Filing Tax Bracket
 ```{r}
 fed_tax_func <- function(salary,
-         brackets = c(9525,38700,82500,157500,200000,500000,Inf),
+         brackets = c(9700,39475,84200,160725,204100,510300,Inf),
          rates = c(0.10,0.12,0.22,0.24,0.32,0.35,0.37)) {        
     sum(diff(c(0, pmin(salary, brackets))) * rates)
 }
