@@ -61,7 +61,7 @@ mo_budget <- function(salary = data){
    no_deduc_tot_tax = no_deduc_fed_tax+state_tax+soc_sec+medicare
    post_tax = salary - no_deduc_tot_tax
    post_deduct_tax = salary - tot_tax
-   return(data.frame('Salary'=salary,'Federal Tax'=fed_tax,'State Tax'=state_tax, 
+   return(data.frame('Salary'=salary,'Federal Tax'=no_deduc_fed_tax,'State Tax'=state_tax, 
                      'Social Security'=soc_sec, 'Medicare'=medicare,'Total Tax'=tot_tax,
                      'Income After Tax w/o Deduction'=post_tax,
                      'Income After Tax w/ Deduction'=post_deduct_tax))
