@@ -16,4 +16,4 @@ No packages necessary
 `custom_living_expenses_func` calculates the cost of living expenses and subtracts them from the user's salary. The user can pass his/her salar,post-taxes, to get the most accurate estimation of costs. 
 
 ## Motivation
-This is just a personal tool that I used for myself but figured others might find it useful!
+This is just a personal tool that I used for myself but figured others might find it useful.
